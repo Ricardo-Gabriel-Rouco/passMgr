@@ -6,6 +6,7 @@ import {
   dropDatabase,
   fetchDatabase,
   populateDb,
+  saveToDatabase
 } from "../../components/dbFunctions/dbFunctions";
 
 const Home = ({ navigation }) => {
@@ -28,14 +29,16 @@ const Home = ({ navigation }) => {
       .then((data) => {
         const updatedConfig = {
           dataUser: data.find((item) => item.option === "dataUser").value,
-          selfDestruction: data.find((item) => item.option === "selfDestruction").value,
+          selfDestruction: data.find(
+            (item) => item.option === "selfDestruction"
+          ).value,
           tries: parseInt(data.find((item) => item.option === "tries").value),
           mode: data.find((item) => item.option === "mode").value,
           email: data.find((item) => item.option === "email").value,
           notify: data.find((item) => item.option === "notify").value,
         };
-        setConfig({...config, updatedConfig});
-        // console.log(config)
+        setConfig({ ...updatedConfig });
+        console.log(config)
       })
       .catch((error) => {
         console.log("Error al obtener los datos de la base de datos:", error);
@@ -51,23 +54,25 @@ const Home = ({ navigation }) => {
     if (loginData.name.length === 0 || loginData.password.length === 0) {
       Alert.alert("Faltan datos");
     } else {
-      db.transaction((tx) => {
-        tx.executeSql(
-          "INSERT INTO Users (Name, Password) VALUES (?, ?)",
-          [loginData.name, loginData.password],
-          () => {
-            // Éxito
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-      });
+      const wordToHash = loginData.name + loginData.password;
+      saveToDatabase(wordToHash)
+      Alert.alert('Welcome Aboard')
       navigation.navigate("Passwords", {
-        name: loginData.name,
+        name: config.dataUser,
       });
     }
   };
+
+  const logIn = () => {
+    const credentials = loginData.name + loginData.password
+    if(config.dataUser === credentials){
+      navigation.navigate("Passwords", {
+        name: config.dataUser,
+      });
+    } else {
+      Alert.alert('Incorrect credentials')
+    }
+  }
 
   if (!config.dataUser) {
     return (
@@ -99,6 +104,7 @@ const Home = ({ navigation }) => {
     );
   } else {
     return (
+
       <View style={style.container}>
         <Text style={style.title}>Login</Text>
         <Text>Name</Text>
@@ -120,7 +126,7 @@ const Home = ({ navigation }) => {
         <Button
           title="Log In"
           onPress={() => {
-            firstLogin();
+            logIn();
           }}
         />
       </View>
@@ -212,3 +218,16 @@ const style = StyleSheet.create({
 //     );
 //   });
 // }
+
+// db.transaction((tx) => {
+//   tx.executeSql(
+//     "INSERT INTO Users (Name, Password) VALUES (?, ?)",
+//     [loginData.name, loginData.password],
+//     () => {
+//       // Éxito
+//     },
+//     (error) => {
+//       console.log(error);
+//     }
+//   );
+// });

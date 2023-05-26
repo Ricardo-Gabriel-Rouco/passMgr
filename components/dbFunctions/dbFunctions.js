@@ -94,3 +94,18 @@ export const populateDb = () => {
     );
   });
 }
+
+export const saveToDatabase = (wordToHash) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "UPDATE Configs SET value=? WHERE option=?",
+      [wordToHash, 'dataUser'],
+      () => {
+        console.log('Hash created succesfully') 
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  });
+}
