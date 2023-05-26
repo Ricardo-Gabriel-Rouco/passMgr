@@ -78,11 +78,7 @@ const NewRegister = () => {
         />
         <Button
           title="Save"
-          onPress={() =>
-            Alert.alert(
-              `platform: ${loginData.platform}, User Name: ${loginData.userName}`
-            )
-          }
+          onPress={() => {}}
         />
       </ScrollView>
     </KeyboardAvoidingScrollView>

@@ -9,38 +9,30 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import * as SQlite from 'expo-sqlite'
-
-const db = SQlite.openDatabase("MainDb.db");
+import { fetchDatabase } from "../dbFunctions/dbFunctions";
 
 function Main({ route, navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM Registers',
-        [],
-        (tx, result) => {
-          const rows = result.rows;
-          const newData = [];
-
-          for (let i = 0; i < rows.length; i++) {
-            newData.push(rows.item(i));
-          }
-
-          setData(newData);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    });
-  };
+    fetchDatabase('Registers')
+      .then((data) => {
+        const allRegisters = {
+          title: data.title,
+          category: data.category,
+          userName: data.userName,
+          password: data.password,
+          email: data.email,
+          website: data.website,
+          comments: data.comments
+        };
+        setData({ ...allRegisters });
+        
+      })
+      .catch((error) => {
+        console.log(error)
+      });
+      },[])
 
 
   return (

@@ -1,18 +1,18 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import React from "react";
-import * as SQLite from "expo-sqlite";
+import React, {useEffect, useState} from "react";
+// import * as SQLite from "expo-sqlite";
 import {
   createTable,
-  dropDatabase,
+  // dropDatabase,
   fetchDatabase,
   populateDb,
   saveToDatabase
 } from "../../components/dbFunctions/dbFunctions";
 
 const Home = ({ navigation }) => {
-  const db = SQLite.openDatabase("MainDb.db");
+  // const db = SQLite.openDatabase("MainDb.db");
 
-  const [config, setConfig] = React.useState({
+  const [config, setConfig] =  useState({
     dataUser: "",
     selfDestruction: false,
     tries: 0,
@@ -21,11 +21,11 @@ const Home = ({ navigation }) => {
     notify: false,
   });
 
-  React.useEffect(() => {
+   useEffect(() => {
     createTable();
     populateDb();
     // dropDatabase()
-    fetchDatabase()
+    fetchDatabase('Configs')
       .then((data) => {
         const updatedConfig = {
           dataUser: data.find((item) => item.option === "dataUser").value,
@@ -45,7 +45,7 @@ const Home = ({ navigation }) => {
       });
   }, []);
 
-  const [loginData, setLoginData] = React.useState({
+  const [loginData, setLoginData] =  useState({
     name: "",
     password: "",
   });
@@ -155,79 +155,3 @@ const style = StyleSheet.create({
     padding: 10,
   },
 });
-
-// const createTable = () => {
-//   db.transaction((tx) => {
-//     tx.executeSql(
-//       "CREATE TABLE IF NOT EXISTS Configs (ID INTEGER PRIMARY KEY AUTOINCREMENT, option TEXT, value TEXT )",
-//       [],
-//       () => {
-//         console.log("tablas creadas");
-//       },
-//       (error) => {
-//         console.log(error);
-//       }
-//     );
-//   });
-//   db.transaction((tx) => {
-//     tx.executeSql(
-//       "CREATE TABLE IF NOT EXISTS Registers (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT, Category TEXT, Username TEXT, Password TEXT, Website TEXT, Comments TEXT)",
-//       [],
-//       () => {
-//         console.log("tablas creadas");
-//       },
-//       (error) => {
-//         console.log(error);
-//       }
-//     );
-//   });
-// };
-
-// const dropDatabase = () => {
-//   db.transaction((tx) => {
-//     tx.executeSql(
-//       "DROP TABLE IF EXISTS Users",
-//       [],
-//       () => {
-//         console.log("tablas eliminadas");
-//       },
-//       (error) => {
-//         console.log(error);
-//       }
-//     );
-//   });
-// };
-
-// const fetchDatabase = () => {
-//   db.transaction((tx) => {
-//     tx.executeSql(
-//       "SELECT * from Configs",
-//       [],
-//       (tx, result) => {
-//         const rows = result.rows
-//         let data = [];
-//         for (let i = 0; i < rows.length; i++) {
-//           data.push(rows.item(i));
-//         }
-//         setConfig({...config, data})
-//         console.log(config)
-//       },
-//       (error) => {
-//         console.log(error);
-//       }
-//     );
-//   });
-// }
-
-// db.transaction((tx) => {
-//   tx.executeSql(
-//     "INSERT INTO Users (Name, Password) VALUES (?, ?)",
-//     [loginData.name, loginData.password],
-//     () => {
-//       // Éxito
-//     },
-//     (error) => {
-//       console.log(error);
-//     }
-//   );
-// });

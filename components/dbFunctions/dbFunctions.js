@@ -40,11 +40,11 @@ export const dropDatabase = () => {
   });
 };
 
-export const fetchDatabase = () => {
+export const fetchDatabase = (dbName) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT * from Configs",
+        `SELECT * from ${dbName}`,
         [],
         (tx, result) => {
           const rows = result.rows;
@@ -53,7 +53,7 @@ export const fetchDatabase = () => {
             data.push(rows.item(i));
           }
           // console.log(data)
-          resolve(data); // Resolvemos la promesa con los datos obtenidos
+          resolve(data);
         },
         (error) => {
           console.log(error);
