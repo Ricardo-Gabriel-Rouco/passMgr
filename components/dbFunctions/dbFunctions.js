@@ -109,3 +109,20 @@ export const saveToDatabase = (wordToHash) => {
     );
   });
 }
+
+export const saveRegisters = (newRegister) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'INSERT INTO Registers (Title, Category, Username, Password, Website, Comments) VALUES (?,?,?,?,?,?)',
+        [newRegister.title, newRegister.category, newRegister.userName, newRegister.password, newRegister.website, newRegister.comments],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};

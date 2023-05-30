@@ -12,42 +12,44 @@ import React, { useEffect, useState } from "react";
 import { fetchDatabase } from "../dbFunctions/dbFunctions";
 
 function Main({ route, navigation }) {
-  const [data, setData] = useState([]);
+  const [registers, setRegisters] = useState([]);
 
-  useEffect(() => {
-    fetchDatabase('Registers')
-      .then((data) => {
-        const allRegisters = {
-          title: data.title,
-          category: data.category,
-          userName: data.userName,
-          password: data.password,
-          email: data.email,
-          website: data.website,
-          comments: data.comments
-        };
-        setData({ ...allRegisters });
-        
-      })
-      .catch((error) => {
-        console.log(error)
-      });
-      },[])
-
+    useEffect(() => {
+      fetchDatabase('Registers')
+        .then((data) => {
+          setRegisters(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }, []);
 
   return (
     <View style={style.container}>
       <Text style={style.title}>Hola {route.params.name}</Text>
-      <Button title="Create new" onPress={()=>navigation.navigate('New Register')} />
-
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={()=>navigation.navigate('Details', {Password: item.Password})}>
-            <Text style={style.item}>{item.ID} {item.Name}</Text>
-          </TouchableOpacity>
-        )}
+      <Button
+        title="Create new"
+        onPress={() => navigation.navigate("NewRegister")}
       />
+      {registers ? (
+        <FlatList
+          data={registers}
+          keyExtractor={(item) => item.ID.toString()} // Agregar keyExtractor para evitar advertencias de clave única
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Details", { password: item.Password })
+              }
+            >
+              <Text style={style.item}>
+                {item.ID} {item.Username}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      ) : (
+        <Text>No Registers yet...!</Text>
+      )}
     </View>
   );
 }

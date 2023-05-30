@@ -1,17 +1,8 @@
-import {
-  ScrollView,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Alert,
-  // KeyboardAvoidingScrollView,
-  // Platform,
-} from "react-native";
+import { ScrollView, Text, TextInput, Button, StyleSheet } from "react-native";
 
-// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view'
+import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
 import React from "react";
+import { saveRegisters } from "../dbFunctions/dbFunctions";
 
 const NewRegister = () => {
   const [loginData, setLoginData] = React.useState({
@@ -23,11 +14,27 @@ const NewRegister = () => {
     comments: "",
   });
 
-  return (
-    <KeyboardAvoidingScrollView
+  const saveToDb = () => {
+    saveRegisters(loginData)
+      .then(
+        setLoginData({
+          title: "",
+          category: "",
+          userName: "",
+          password: "",
+          website: "",
+          comments: "",
+        })
+      )
+      .catch((error) => console.log(error));
+  };
 
-    >
-      <ScrollView contentContainerStyle={style.container} keyboardShouldPersistTaps="handled">
+  return (
+    <KeyboardAvoidingScrollView>
+      <ScrollView
+        contentContainerStyle={style.container}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text>Title</Text>
         <TextInput
           onChangeText={(newValue) =>
@@ -78,7 +85,9 @@ const NewRegister = () => {
         />
         <Button
           title="Save"
-          onPress={() => {}}
+          onPress={() => {
+            saveToDb();
+          }}
         />
       </ScrollView>
     </KeyboardAvoidingScrollView>

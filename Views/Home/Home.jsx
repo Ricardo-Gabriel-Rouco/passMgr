@@ -38,7 +38,6 @@ const Home = ({ navigation }) => {
           notify: data.find((item) => item.option === "notify").value,
         };
         setConfig({ ...updatedConfig });
-        console.log(config)
       })
       .catch((error) => {
         console.log("Error al obtener los datos de la base de datos:", error);
