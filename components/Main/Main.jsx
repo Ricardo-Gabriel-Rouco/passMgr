@@ -38,7 +38,7 @@ function Main({ route, navigation }) {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("Details", { password: item.Password })
+                navigation.navigate("Details", { item })
               }
             >
               <Text style={style.item}>

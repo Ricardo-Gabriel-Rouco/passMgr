@@ -1,18 +1,18 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 // import * as SQLite from "expo-sqlite";
 import {
   createTable,
   // dropDatabase,
   fetchDatabase,
   populateDb,
-  saveToDatabase
+  saveToDatabase,
 } from "../../components/dbFunctions/dbFunctions";
 
 const Home = ({ navigation }) => {
   // const db = SQLite.openDatabase("MainDb.db");
 
-  const [config, setConfig] =  useState({
+  const [config, setConfig] = useState({
     dataUser: "",
     selfDestruction: false,
     tries: 0,
@@ -21,11 +21,11 @@ const Home = ({ navigation }) => {
     notify: false,
   });
 
-   useEffect(() => {
+  useEffect(() => {
     createTable();
     populateDb();
     // dropDatabase()
-    fetchDatabase('Configs')
+    fetchDatabase("Configs")
       .then((data) => {
         const updatedConfig = {
           dataUser: data.find((item) => item.option === "dataUser").value,
@@ -44,7 +44,7 @@ const Home = ({ navigation }) => {
       });
   }, []);
 
-  const [loginData, setLoginData] =  useState({
+  const [loginData, setLoginData] = useState({
     name: "",
     password: "",
   });
@@ -54,24 +54,26 @@ const Home = ({ navigation }) => {
       Alert.alert("Faltan datos");
     } else {
       const wordToHash = loginData.name + loginData.password;
-      saveToDatabase(wordToHash)
-      Alert.alert('Welcome Aboard')
+      saveToDatabase(wordToHash);
+      Alert.alert("Welcome Aboard");
       navigation.navigate("Passwords", {
         name: config.dataUser,
       });
+      setLoginData({ name: "", password: "" });
     }
   };
 
   const logIn = () => {
-    const credentials = loginData.name + loginData.password
-    if(config.dataUser === credentials){
+    const credentials = loginData.name + loginData.password;
+    if (config.dataUser === credentials) {
       navigation.navigate("Passwords", {
         name: config.dataUser,
       });
+      setLoginData({ name: "", password: "" });
     } else {
-      Alert.alert('Incorrect credentials')
+      Alert.alert("Incorrect credentials");
     }
-  }
+  };
 
   if (!config.dataUser) {
     return (
@@ -103,7 +105,6 @@ const Home = ({ navigation }) => {
     );
   } else {
     return (
-
       <View style={style.container}>
         <Text style={style.title}>Login</Text>
         <Text>Name</Text>

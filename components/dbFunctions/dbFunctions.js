@@ -116,13 +116,30 @@ export const saveRegisters = (newRegister) => {
       tx.executeSql(
         'INSERT INTO Registers (Title, Category, Username, Password, Website, Comments) VALUES (?,?,?,?,?,?)',
         [newRegister.title, newRegister.category, newRegister.userName, newRegister.password, newRegister.website, newRegister.comments],
-        (_, result) => {
+        (tx, result) => {
           resolve(result);
         },
-        (_, error) => {
+        (tx, error) => {
           reject(error);
         }
       );
     });
   });
 };
+
+export const deleteRegister = (register) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'DELETE FROM Registers WHERE ID = ?',
+        [register],
+        (tx,result) => {
+          resolve(result);
+        },
+        (tx, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+}
